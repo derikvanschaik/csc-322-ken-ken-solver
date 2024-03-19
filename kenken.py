@@ -59,9 +59,8 @@ Region s
 def region_constraints(parse_rules):
     constraints = []
     for region in parse_rules.keys():
-        ## TODO: how would r.24.6 rule be created...?
-        # maybe (assert (= 6 V24)) ? or (assert (= V24 6))
-        # only thinking the second since prefix notation would write like that..
+        ## TODO: some how verify that r24.6 would be of form
+        # (assert (= 6 V24))
         variables = parse_rules[region]["variables"]
         operator = parse_rules[region]["operator"]
         value = parse_rules[region]["value"]
@@ -81,9 +80,9 @@ def region_constraints(parse_rules):
             variable_constraints = f"(or {variable_constraints})"
             const = variable_constraints
 
-        # single assignment -- don't really know yet what to do here
+        # single assignment like r24.6
         else:
-            pass
+            const = f"(= {value} {variables[0]})"
 
         constraint = f"(assert {const} ; Region {region}"
         constraints.append(constraint)
