@@ -95,23 +95,50 @@ def region_constraints(parse_rules):
 # (assert (and (> V1 0) (< V1 10)))
 def range_constraints(variables):
     constraints = []
-    # TODO: build
+    for var in variables:
+        const = f"(assert (and (> {var} 0) (< {var} 7)))"
+        constraints.append(const)
     return constraints
 
 
 """
 from pdf: ...
 Next the constraints for each number has to be unique on the row and unique in a column.
-There are 18 of these lines
 
-not sure if 18 is hardcoded or not, prolly not
 """
 
 
-def build_unique_constraints(variables):
+def build_unique_constraints(variables, n=7):
+    # construct n by n matrix of variables
+    matrix = []
+    for _ in range(n):
+        matrix.append([0 for _ in range(n)])
+
+    for i, el in enumerate(variables):
+        row = i // n
+        col = i % n
+        matrix[row][col] = el
+
     constraints = []
-    # TODO : build
+    for i in range(n):
+        row = matrix[i]
+        col = [row for row in zip(*matrix)][i]
+        # TODO: is line part correct?
+        row_const = f'(assert (distinct {" ".join(row)} )) ; line {i}1'
+        col_const = f'(assert (distinct {" ".join(col)} )) ; line {i}{n}'
+
+        constraints.append(row_const)
+        constraints.append(col_const)
+
     return constraints
+
+
+def declare_variables(n=7):
+    variables = [f"V{num}" for num in range((n * n))]
+    res = []
+    for var in variables:
+        res.append(f"(declare-const {var} Int)")
+    return res
 
 
 def build_constraints(rules, n=7):
@@ -134,6 +161,22 @@ if __name__ == "__main__":
     r19,r20,r21,r21,r23.3-,r23,r24.6"""
 
     parsed = parse_rules(ex)
+    declared = declare_variables()
     constraints = build_constraints(parsed)
-    for const in constraints:
-        print(const)
+
+    ## smt format
+    smt_format = f"(set-logic UFNIA)\n(set-option :produce-models true)\n(set-option :produce-assignments true)\n"
+    for d in declared:
+        smt_format += d + "\n"
+    for c in constraints:
+        smt_format += c + "\n"
+
+    smt_format += "(check-sat)\n"
+
+    n = 7
+    variables = [f"V{num}" for num in range((n * n))]
+
+    smt_format += f"(get-value ({' '.join(variables)}))\n"
+    smt_format += "(exit)\n"
+
+    print(smt_format)
