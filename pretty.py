@@ -198,10 +198,8 @@ if data is not None:
 
     pretty_output = generate_html(A, T, S, V, H)
 
-    # Specify the path to the HTML file you want to create
     file_path = "pretty_printer.html"
 
-    # Open the file in write mode ('w') and write the HTML content to it
     with open(file_path, "w") as html_file:
         html_file.write(pretty_output)
 
