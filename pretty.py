@@ -116,7 +116,7 @@ def generate_html(A, T, S, V, H):
   <body>"""
 
     html_end = """
-<button id="show-solution">Show solution</button>
+    <button id="show-solution">Show solution</button>
   </body>
   <style>
     button {
@@ -131,7 +131,16 @@ def generate_html(A, T, S, V, H):
       border: 1px solid grey; /* Small grey border around each cell */
       padding: 10px; /* Adjust padding as needed */
       text-align: center; /* Center content within the cell */
-      color: black;
+      position: relative;
+      height: 60px;
+      width: 44px;
+      font-size: 19px;
+    }
+    .target {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      font-size: 24px;
     }
 
     .border-right {
@@ -141,11 +150,11 @@ def generate_html(A, T, S, V, H):
     .border-bottom {
       border-bottom: 3px solid black;
     }
-    td.solution-hide {
-      color: white;
+    .solution-hide {
+      visibility: hidden;
     }
-    td.solution-show {
-      color: black;
+    .solution-show {
+      visibility: visible;
     }
   </style>
 
@@ -160,7 +169,6 @@ def generate_html(A, T, S, V, H):
     });
   </script>
 </html>
-
 """
     html_str = "<table>"
     for i in range(size):
@@ -175,10 +183,9 @@ def generate_html(A, T, S, V, H):
 
             content = ""
             if S[i][j] != "0" and T[i][j] != "0":
-                content = f"{T[i][j]}{S[i][j]}"
+                content = f"<span class='target'>{T[i][j]}{S[i][j]}</span><span class='solution-hide'>{A[i][j]}</span>"
             else:
-                content = f"{A[i][j]}"
-                border_classes.append("solution-hide")
+                content = f"<span class='solution-hide'>{A[i][j]}</span>"
 
             classes = " ".join(border_classes)
             html_str += f'<td class="{classes}">{content}</td>'
