@@ -115,8 +115,13 @@ def generate_html(A, T, S, V, H):
   <body>"""
 
     html_end = """
+<button id="show-solution">Show solution</button>
   </body>
   <style>
+    button {
+      font-size: 25px;
+      padding: 15px;
+    }
     table {
       border-collapse: collapse; /* Ensures that borders do not double up */
     }
@@ -125,6 +130,7 @@ def generate_html(A, T, S, V, H):
       border: 1px solid grey; /* Small grey border around each cell */
       padding: 10px; /* Adjust padding as needed */
       text-align: center; /* Center content within the cell */
+      color: black;
     }
 
     .border-right {
@@ -134,8 +140,26 @@ def generate_html(A, T, S, V, H):
     .border-bottom {
       border-bottom: 3px solid black;
     }
+    td.solution-hide {
+      color: white;
+    }
+    td.solution-show {
+      color: black;
+    }
   </style>
+
+  <script defer>
+    document.addEventListener("DOMContentLoaded", (event) => {
+      document.getElementById("show-solution").addEventListener("click", () => {
+        document.querySelectorAll(".solution-hide").forEach((el) => {
+          el.classList.remove("solution-hide");
+          el.classList.add("solution-show");
+        });
+      });
+    });
+  </script>
 </html>
+
 """
     html_str = "<table>"
     for i in range(size):
@@ -147,8 +171,14 @@ def generate_html(A, T, S, V, H):
                 border_classes.append("border-right")
             if H[j][i] == "1":
                 border_classes.append("border-bottom")
-            # Add target and symbol if present
-            content = f"{T[i][j]}{S[i][j]}" if S[i][j] != "0" and T[i][j] != "0" else ""
+
+            content = ""
+            if S[i][j] != "0" and T[i][j] != "0":
+                content = f"{T[i][j]}{S[i][j]}"
+            else:
+                content = f"{A[i][j]}"
+                border_classes.append("solution-hide")
+
             classes = " ".join(border_classes)
             html_str += f'<td class="{classes}">{content}</td>'
         html_str += "</tr>"
@@ -159,7 +189,7 @@ def generate_html(A, T, S, V, H):
 # Open the file and load the JSON data
 data = None
 
-with open("./output.json", "r") as file:
+with open("./22171.json", "r") as file:
     data = json.load(file)
 
 if data is not None:
