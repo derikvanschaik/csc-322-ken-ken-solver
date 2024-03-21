@@ -70,7 +70,7 @@ def region_constraints(parse_rules):
 
         if operator in ("*", "+"):
             variable_constraints = f'({operator} {" ".join(variables)})'
-            const = f"(= {value} {variable_constraints}))"
+            const = f"(= {value} {variable_constraints})"
 
         elif operator in ("/", "-"):
             variable_perm = list(permutations(variables))
@@ -84,7 +84,7 @@ def region_constraints(parse_rules):
         else:
             const = f"(= {value} {variables[0]})"
 
-        constraint = f"(assert {const} ; Region {region}"
+        constraint = f"(assert {const}) ; Region {region}"
         constraints.append(constraint)
 
     return constraints
