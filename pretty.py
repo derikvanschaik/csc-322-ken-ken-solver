@@ -104,20 +104,56 @@ def parse_kenken_data(json_data):
 
 def generate_html(A, T, S, V, H):
     size = len(A)
+    html_start = """
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>"""
+
+    html_end = """
+  </body>
+  <style>
+    table {
+      border-collapse: collapse; /* Ensures that borders do not double up */
+    }
+
+    td {
+      border: 1px solid grey; /* Small grey border around each cell */
+      padding: 10px; /* Adjust padding as needed */
+      text-align: center; /* Center content within the cell */
+    }
+
+    .border-right {
+      border-right: 3px solid black;
+    }
+
+    .border-bottom {
+      border-bottom: 3px solid black;
+    }
+  </style>
+</html>
+"""
     html_str = "<table>"
     for i in range(size):
         html_str += "<tr>"
         for j in range(size):
             # Determine borders
             border_classes = []
-
+            if V[i][j] == "1":
+                border_classes.append("border-right")
+            if H[j][i] == "1":
+                border_classes.append("border-bottom")
             # Add target and symbol if present
-            content = f"{T[i][j]}{S[i][j]}" if S[i][j] != "0" else ""
+            content = f"{T[i][j]}{S[i][j]}" if S[i][j] != "0" and T[i][j] != "0" else ""
             classes = " ".join(border_classes)
             html_str += f'<td class="{classes}">{content}</td>'
         html_str += "</tr>"
     html_str += "</table>"
-    return html_str
+    return html_start + html_str + html_end
 
 
 # Open the file and load the JSON data
@@ -130,32 +166,13 @@ if data is not None:
     size = int(data["size"])
     A, T, S, V, H = parse_kenken_data(data)
 
-    # for i in range(size):
-    #     for j in range(size):
-    #         symbol = S[i][j]
-    #         target = T[i][j]
-    #         if symbol != "0" and target != "0":
-    #             print(symbol + "" + target, end=" ")
-    #         else:
-    #             print(" " * 2, end=" ")
-    #     print()
-    for i in range(size):
-        for j in range(size):
-            symbol = S[i][j]
-            target = T[i][j]
-            if symbol != "0" and target != "0":
-                # Assuming 'target' is an integer. Adjust formatting if it's not.
-                cell_content = f"{symbol}{target}"  # Concatenating symbol and target
-            else:
-                cell_content = "__"
+    pretty_output = generate_html(A, T, S, V, H)
 
-            # Right-align the content in a field of width 5. Adjust the width as needed.
-            print(f"{cell_content:>5}", end=" ")
-        print()
+    # Specify the path to the HTML file you want to create
+    file_path = "pretty_printer.html"
 
-    # print("---------------------------")
+    # Open the file in write mode ('w') and write the HTML content to it
+    with open(file_path, "w") as html_file:
+        html_file.write(pretty_output)
 
-    # for i in range(size):
-    #     for j in range(size):
-    #         print(S[i][j], end=" ")
-    #     print()
+    print(f"HTML file '{file_path}' has been created.")
