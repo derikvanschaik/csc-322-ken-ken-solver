@@ -1,4 +1,5 @@
 import json
+import sys
 
 
 def parse_kenken_data(json_data):
@@ -189,7 +190,12 @@ def generate_html(A, T, S, V, H):
 # Open the file and load the JSON data
 data = None
 
-with open("./22171.json", "r") as file:
+filename = "./22171.json"
+
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
+
+with open(filename, "r") as file:
     data = json.load(file)
 
 if data is not None:
