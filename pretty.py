@@ -194,6 +194,56 @@ def generate_html(A, T, S, V, H):
     return html_start + html_str + html_end
 
 
+# def generate_terminal(A, T, S, V, H):
+#     size = len(A)
+#     for i in range(size):
+#         for j in range(size):
+#             print(A[i][j], end="|" if V[i][j] == "1" else " ")
+#             # if V[i][j] == "1":
+#             #     border_classes.append("border-right")
+#         print()
+#         for j in range(size):
+#             if H[j][i] == "1":
+#                 print("_", end="")
+#             else:
+#                 print(" ", end="")
+
+
+#         print()
+
+
+def generate_terminal_ascii(A, V, H):
+    size = len(A)
+    for i in range(size):
+        # Draw the top border for the current row
+        row_cells = []
+
+        for j in range(size):
+            cell = {}
+            # cell['val']= f"{A[i][j]:^9}" # This formats the value to be centered within 5 spaces -- makes uniform across rows
+            val = A[i][j]
+
+            cell["right_border"] = V[i][j] == "1"
+            cell["bottom_border"] = H[j][i] == "1"
+            is_target_cell = S[i][j] != "0" and T[i][j] != "0"
+            if is_target_cell:
+                val = f"({S[i][j]}{T[i][j]})" + val
+
+            row_cells.append(cell)
+            vertical_bar = "|"
+            cell["val"] = f"{val:^7}"
+
+            print(cell["val"], end=vertical_bar if cell["right_border"] else " ")
+        print()
+        for cell in row_cells:
+            char = " "
+            if cell["bottom_border"]:
+                char = "_"
+                # plus one accounts for space or vertical bar added after cel val
+            print(char * (len(cell["val"]) + 1), end="")
+        print()
+
+
 # Open the file and load the JSON data
 data = None
 
@@ -217,3 +267,8 @@ if data is not None:
         html_file.write(pretty_output)
 
     print(f"HTML file '{file_path}' has been created.")
+    print(
+        "Please open the html file in your browser for a very nice pretty printed puzzle "
+    )
+    print("here is a terminal equivalent:", end="\n\n")
+    generate_terminal_ascii(A, V, H)
