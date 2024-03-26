@@ -150,6 +150,12 @@ def generate_html(A, T, S, V, H):
     .border-bottom {
       border-bottom: 3px solid black;
     }
+    .border-top {
+      border-top: 3px solid black;
+    }
+    .border-left {
+      border-left: 3px solid black;
+    }
     .solution-hide {
       visibility: hidden;
     }
@@ -179,6 +185,15 @@ def generate_html(A, T, S, V, H):
             if V[i][j] == "1":
                 border_classes.append("border-right")
             if H[j][i] == "1":
+                border_classes.append("border-bottom")
+
+            if i == 0:
+                border_classes.append("border-top")
+            if j == 0:
+                border_classes.append("border-left")
+            if j == size - 1:
+                border_classes.append("border-right")
+            if i == size - 1:
                 border_classes.append("border-bottom")
 
             content = ""
