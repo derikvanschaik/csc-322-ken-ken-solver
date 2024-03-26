@@ -198,7 +198,7 @@ def generate_html(A, T, S, V, H):
 
             content = ""
             if S[i][j] != "0" and T[i][j] != "0":
-                content = f"<span class='target'>{T[i][j]}{S[i][j]}</span><span class='solution-hide'>{A[i][j]}</span>"
+                content = f"<span class='target'>{T[i][j]}{S[i][j] if S[i][j] != '1' else ''}</span><span class='solution-hide'>{A[i][j]}</span>"
             else:
                 content = f"<span class='solution-hide'>{A[i][j]}</span>"
 
@@ -242,7 +242,7 @@ def generate_terminal_ascii(A, V, H):
             cell["bottom_border"] = H[j][i] == "1"
             is_target_cell = S[i][j] != "0" and T[i][j] != "0"
             if is_target_cell:
-                val = f"({S[i][j]}{T[i][j]})" + val
+                val = f"({S[i][j] if S[i][j] != '1' else ''}{T[i][j]})" + val
 
             row_cells.append(cell)
             vertical_bar = "|"
